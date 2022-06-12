@@ -6,7 +6,7 @@ Triggering and analyzing Swift UVOT follow-ups for ZTF sources of interest.
 
 - [HEASoft](https://heasarc.gsfc.nasa.gov/lheasoft/)
 
-- [The HEASARC Calibration Database (CALDB)]([https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/caldb_intro.html)
+- [The HEASARC Calibration Database (CALDB)](https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/caldb_intro.html)
 
 ## Usage
 
