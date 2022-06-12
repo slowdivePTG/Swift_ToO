@@ -42,6 +42,8 @@ fk5;circle(RA [deg], dec [deg], radius'' [arcsec])
 
 Then with a second run, the multi-band aperture photometry results will be stored in `./data/SN_NAME/OBS_ID/uvot/image/FILTER.out`.
 
+> Not a good idea to let an expection stop us before we create the `reg` files - to be fixed in the future.
+
 ### Light curves
 
 ```shell
@@ -70,9 +72,9 @@ python UVOT_LightCurve.py --name "SN_NAME"
 
 2. In `UVOT_Phot.py`, in case of
    
-   ```shell
+   ```
    CALDBCONFIG environment variable not properly set (at HDgtcalf.c: 609)
    Problem getting CALDB index file (at HDgtcalf.c: 77)
    ```
    
-   you may need to change the definition of `$CALDBCONFIG` and `$CALDBALIAS` in `$CALDB/software/tools/caldbinit.sh` or `$CALDB/caldbinit.sh` to match the local installation. As you see, the path to `caldbinit.sh` also vary from machines to machines.
+   you may need to change the definition of `$CALDBCONFIG` and `$CALDBALIAS` in `$CALDB/software/tools/caldbinit.sh` or `$CALDB/caldbinit.sh` to match the local installation. As you see, the path to `caldbinit.sh` can also vary from machines to machines.
