@@ -30,8 +30,16 @@ if not name in os.listdir('data'):
     os.system(f'mkdir data/{name}')
 
 for oq in oqs:
-    # may need to comment out lines 1012-1018 in $PATH/tqdm/std.py if the exception below is raised:
+    # If this exception is raised
     #     tqdm.std.TqdmKeyError: "Unknown argument(s): {'display': False}"
+    # May need to comment out the lines below in tqdm/std.py 
+    #     raise (
+    #         TqdmDeprecationWarning(
+    #             "`nested` is deprecated and automated.\n"
+    #             "Use `position` instead for manual control.\n",
+    #             fp_write=getattr(file, 'write', sys.stderr.write))
+    #         if "nested" in kwargs else
+    #         TqdmKeyError("Unknown argument(s): " + str(kwargs)))
     data = Data(obsid=oq.obsid,
                 uvot=True,
                 outdir=f'data/{name}',
