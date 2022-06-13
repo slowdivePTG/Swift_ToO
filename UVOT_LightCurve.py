@@ -36,7 +36,7 @@ for k, obsid in enumerate(obsids):
         flt = im.split('/')[-1][:-4]  # filter name
         data = fits.getdata(im)
         snr = data['AB_FLUX_AA'] / data['AB_FLUX_AA_ERR']
-        phot[flt][0, k] = data['MET']  # mean MJD
+        phot[flt][0, k] = data['MET'] / 24 / 3600 + 51910  # mission time + Jan 1.0, 2001
         if snr >= data['AB_MAG_LIM_SIG']:
             phot[flt][1, k] = data['AB_MAG']
             phot[flt][2, k] = data['AB_MAG_ERR']
