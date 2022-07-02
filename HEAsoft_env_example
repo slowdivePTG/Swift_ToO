@@ -1,0 +1,14 @@
+### Setting up the environment for HEAsoft
+HEADAS=/path/to/your/installed/(YOUR_HEASOFT_VERSION)/(PLATFORM)
+# In the examples above, (PLATFORM) is a placeholder for the platform-specific string denoting your machine's architecture,
+# for example:x86_64-apple-darwin20.6.0
+headas_shell=$HEADAS/headas-init.sh
+
+### Setting up the environment for CALDB (calibration database)
+CALDB=/Users/chang/HEASARC/caldb
+caldb_shell=$CALDB/software/tools/caldbinit.sh
+# can also be $CALDB/caldbinit.sh, make sure to double check
+
+### Setting the HEADASPROMPT variable to "/dev/null" redirects prompts to the null stream
+### and prevents tasks from trying to open the console terminal in any situation
+HEADASPROMPT=/dev/null
