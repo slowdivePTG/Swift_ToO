@@ -21,10 +21,8 @@ for line in lines:
         continue
     if l[0] == '#':
         continue
-    var = l.split('=')[0]
-    string = l.split('=')[1]
-    env_var[var] = string
-try:       
+    env_var[l.split('=')[0]] = l.split('=')[1]
+try:
     # Setting up the environment for HEAsoft
     os.environ['HEADAS'] = env_var['HEADAS']
     headas_shell = env_var['headas_shell']
@@ -47,7 +45,7 @@ try:
         (line.decode('utf-8').split("=", 1) for line in output.splitlines()))
     os.environ.update(env)
 
-    # Setting the HEADASPROMPT variable to "/dev/null" 
+    # Setting the HEADASPROMPT variable to "/dev/null"
     os.environ['HEADASPROMPT'] = env_var['HEADASPROMPT']
 except KeyError as err:
     sys.exit(f"Please define {err} in HEAsoft_env")

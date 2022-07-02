@@ -8,6 +8,10 @@ Triggering and analyzing Swift UVOT follow-ups for ZTF sources of interest.
 
 - [The HEASARC Calibration Database (CALDB)](https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/caldb_intro.html)
 
+## Environment setups
+
+You will need to correctly set the `HEAsoft` and `CALDB` paths in a `HEAsoft_env` file for all the `HEAsoft` methods to function. See `HEAsoft_env_ex` for an example.
+
 ## Usage
 
 ### Submit a ToO request
@@ -32,23 +36,25 @@ Data from each observation will be stored in `./data/SN_NAME/`.
 python UVOT_Phot.py --name "SN_NAME"
 ```
 
-The Python script will automatically sum UVOT sky images/exposure maps and generate a `FITS` image for each filter in `./data/SN_NAME/OBS_ID/uvot/image/`.
-
-After the first run, you will need to visually inspect the image and decide the source and sky background regions to be used in the aperture photometry. The two regions should be stored in `src.reg` and `bkg.reg` under the `./data/SN_NAME/` directory, in the syntax of
+To begin with, you will need to visually inspect the image and decide the source and sky background regions to be used in the aperture photometry. The two regions should be stored in `src.reg` and `bkg.reg` under the `./data/SN_NAME/` directory, following the syntax below
 
 ```
 fk5;circle(RA [deg], dec [deg], radius'' [arcsec])
 ```
 
-Then with a second run, the multi-band aperture photometry results will be stored in `./data/SN_NAME/OBS_ID/uvot/image/FILTER.out`.
+> TODO: create an interactive script to generate the region files automatically.
 
-> Not a good idea to let an expection stop us before we create the `reg` files - to be fixed in the future.
+The Python script will automatically do photometry for every single exposure in UVOT sky images/exposure maps and generate a `FITS` image for each filter in `./data/SN_NAME/OBS_ID/uvot/image/` called `FILTER_maghist.out`. If there are multiple exposures in one image, all of which have SNR < 5, the script will stack all the exposures and obtain the source flux from the stacked image.
+
+Then with a second run, the multi-band aperture photometry results will be stored in `./data/SN_NAME/OBS_ID/uvot/image/FILTER_stacked.out`.
 
 ### Light curves
 
 ```shell
 python UVOT_LightCurve.py --name "SN_NAME"
 ```
+
+This script will first try to read the `*_stacked.out` files. If they do not exist, which means the images are not stacked, it will then read the `*_maghist.out` files for single exposures.
 
 ## Known issues
 

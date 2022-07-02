@@ -1,3 +1,6 @@
+### Syntax
+# VAR=PATH
+
 ### Setting up the environment for HEAsoft
 HEADAS=/path/to/your/installed/(YOUR_HEASOFT_VERSION)/(PLATFORM)
 # In the examples above, (PLATFORM) is a placeholder for the platform-specific string denoting your machine's architecture,
