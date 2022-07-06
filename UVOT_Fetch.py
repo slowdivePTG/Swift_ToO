@@ -2,8 +2,7 @@
 A script to query and download UVOT data.
 '''
 
-from swifttools.swift_too import Data
-from swifttools.swift_too import ObsQuery
+from swifttools.swift_too import Data, ObsQuery
 import argparse
 import os
 

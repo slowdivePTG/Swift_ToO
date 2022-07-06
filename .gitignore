@@ -132,3 +132,7 @@ dmypy.json
 .DS_Store
 .vscode/
 data/
+Ryan/
+
+# HEAsoft environment
+HEAsoft_env
