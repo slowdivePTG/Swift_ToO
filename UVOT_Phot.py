@@ -10,6 +10,10 @@ from astropy.io import fits
 parser = argparse.ArgumentParser(
     description='Do photometry for Swift UVOT data.')
 parser.add_argument('-n', '--name', help='The name of the target.')
+parser.add_argument('-s',
+                    '--stack',
+                    help='Whether to force stacking the images.',
+                    action='store_true')
 args = parser.parse_args()
 
 env_var = {}
@@ -90,7 +94,7 @@ for d in obsids:
 
                 # if more than one exposures were made, all of which have SNR < 5
                 # run uvotimsum to stack the images
-                if np.all(SNR < 5) and len(np.atleast_1d(SNR)) > 1:
+                if (np.all(SNR < 5) and len(np.atleast_1d(SNR)) > 1) or (args.stack):
                     weightedtime = np.average(
                         lc["MET"],  #Mission Elapsed Time (MET)
                         weights=lc["EXPOSURE"])

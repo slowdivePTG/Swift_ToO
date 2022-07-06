@@ -57,22 +57,22 @@ for k, obsid in enumerate(obsids):
         for k in range(len(snr)):
             AB_mag = -2.5 * np.log10(data['AB_FLUX_HZ'][k] / 3631e3)
             mag = np.append(mag, AB_mag)
-            if (snr[k] >= data['AB_MAG_LIM_SIG']):
+            if ((snr[k] >= data['AB_MAG_LIM_SIG']).any()):
                 AB_mag_up = -2.5 * np.log10(
-                    (data['AB_FLUX_HZ'][k] - data['AB_FLUX_HZ_ERR']) / 3631e3)
+                    (data['AB_FLUX_HZ'][k] - data['AB_FLUX_HZ_ERR'][k]) / 3631e3)
                 AB_mag_lo = -2.5 * np.log10(
-                    (data['AB_FLUX_HZ'][k] + data['AB_FLUX_HZ_ERR']) / 3631e3)
+                    (data['AB_FLUX_HZ'][k] + data['AB_FLUX_HZ_ERR'][k]) / 3631e3)
                 # pass the snr threshold
                 mag_ulim = np.append(mag_ulim, AB_mag - AB_mag_up)
                 mag_llim = np.append(mag_llim, AB_mag_lo - AB_mag)
-                lolim = np.append(lolim, False)
+                lolim = np.append(lolim, np.zeros_like(AB_mag))
             else:
                 # low snr, provide lower limit
                 AB_mag_lim = -2.5 * np.log10(
                     data['AB_FLUX_HZ_LIM'][k] / 3631e3)
                 mag_ulim = np.append(mag_ulim, np.zeros_like(AB_mag))
                 mag_llim = np.append(mag_llim, AB_mag_lim - AB_mag)
-                lolim = np.append(lolim, True)
+                lolim = np.append(lolim, np.ones_like(AB_mag))
         if not flt in phot.keys():
             phot[flt] = np.array([mjd, mag, mag_ulim, mag_llim, lolim])
         else:
