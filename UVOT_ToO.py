@@ -20,8 +20,10 @@ parser.add_argument(
 args = parser.parse_args()
 
 # log in
-username = 'ptgcliu'
-shared_secret = 'HfoUw0xByJqanAVESsGt'  # to be removed when made public
+import pandas as pd
+df = pd.read_csv("shared_secret", delimiter=",")
+username = df["username"].values[0]
+shared_secret = df["shared_secret"].values[0]
 too = TOO()
 too.username = username
 too.shared_secret = shared_secret
