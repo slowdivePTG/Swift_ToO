@@ -52,13 +52,12 @@ for k, obsid in enumerate(obsids):
         data = fits.getdata(im)
         snr = data["AB_FLUX_HZ"] / data["AB_FLUX_HZ_ERR"]
         mjd = np.array([])
-        mag, mag_unc, mag_ulim, mag_llim = (
-            np.array([]),
+        mag_Vega, mag_unc, mag_Vega_lim = (
             np.array([]),
             np.array([]),
             np.array([]),
         )
-        mag_Vega, mag_Vega_unc, mag_Vega_lim = (
+        mag, mag_ulim, mag_llim = (
             np.array([]),
             np.array([]),
             np.array([]),
@@ -69,14 +68,12 @@ for k, obsid in enumerate(obsids):
             mjd, data["MET"] / 24 / 3600 + 51910
         )  # mission time + Jan 1.0, 2001
         for k in range(len(snr)):
-            AB_mag = -2.5 * np.log10(data["AB_FLUX_HZ"][k] / 3631e3)
+            AB_mag = data["AB_MAG"][k]
             Vega_mag = data["MAG"][k]
             Vega_mag_unc = data["MAG_ERR"][k]
             mag = np.append(mag, AB_mag)
             mag_Vega = np.append(mag_Vega, Vega_mag)
-            AB_mag_unc = 2.5 / np.log(10) / snr
-            mag_unc = np.append(mag_unc, AB_mag_unc)
-            mag_Vega_unc = np.append(mag_Vega_unc, Vega_mag_unc)
+            mag_unc = np.append(mag_unc, Vega_mag_unc)
             if args.snr_limit < 0:
                 snr_limit = data["AB_MAG_LIM_SIG"]
             else:
@@ -85,19 +82,19 @@ for k, obsid in enumerate(obsids):
             fl_unc = np.append(fl_unc, data["AB_FLUX_HZ_ERR"][k] * 1e3)  # mJy --> muJy
             if (snr[k] >= snr_limit).any():
                 AB_mag_up = -2.5 * np.log10(
-                    (data["AB_FLUX_HZ"][k] + data["AB_FLUX_HZ_ERR"][k]) / 3631e3
+                    1 + data["AB_FLUX_HZ_ERR"][k] / data["AB_FLUX_HZ"][k]
                 )
-                AB_mag_lo = -2.5 * np.log10(
-                    (data["AB_FLUX_HZ"][k] - data["AB_FLUX_HZ_ERR"][k]) / 3631e3
+                AB_mag_lo = 2.5 * np.log10(
+                    1 - data["AB_FLUX_HZ_ERR"][k] / data["AB_FLUX_HZ"][k]
                 )
                 # pass the snr threshold
-                mag_ulim = np.append(mag_ulim, AB_mag - AB_mag_up)
-                mag_llim = np.append(mag_llim, AB_mag_lo - AB_mag)
+                mag_ulim = np.append(mag_ulim, AB_mag_up)
+                mag_llim = np.append(mag_llim, AB_mag_lo)
                 lolim = np.append(lolim, np.zeros_like(AB_mag))
             else:
                 # low snr, provide limit
-                AB_mag_lim = -2.5 * np.log10(data["AB_FLUX_HZ_LIM"][k] / 3631e3)
-                Vega_mag_lim = AB_mag_lim + (Vega_mag - AB_mag)
+                AB_mag_lim = data["AB_MAG_LIM"][k]
+                Vega_mag_lim = data["MAG_LIM"][k]
                 mag_ulim = np.append(mag_ulim, AB_mag - AB_mag_lim)
                 mag_llim = np.append(mag_llim, 0)
                 lolim = np.append(lolim, np.ones_like(AB_mag))
@@ -110,14 +107,36 @@ for k, obsid in enumerate(obsids):
 
         if len(phot_output) == 0:
             phot_output = np.array(
-                [mjd, mag_Vega, mag_Vega_unc, fl, fl_unc, mag, mag_unc, mag_ulim, mag_llim, lolim, [flt]],
+                [
+                    mjd,
+                    mag_Vega,
+                    mag_unc,
+                    fl,
+                    fl_unc,
+                    mag,
+                    mag_ulim,
+                    mag_llim,
+                    lolim,
+                    [flt],
+                ],
                 dtype=object,
             )
         else:
             phot_output = np.append(
                 phot_output,
                 np.array(
-                    [mjd, mag_Vega, mag_Vega_unc, fl, fl_unc, mag, mag_unc, mag_ulim, mag_llim, lolim, [flt]],
+                    [
+                        mjd,
+                        mag_Vega,
+                        mag_unc,
+                        fl,
+                        fl_unc,
+                        mag,
+                        mag_ulim,
+                        mag_llim,
+                        lolim,
+                        [flt],
+                    ],
                     dtype=object,
                 ),
                 axis=1,
@@ -126,7 +145,7 @@ for k, obsid in enumerate(obsids):
 np.savetxt(
     f"./data/{args.name}/UVOT_light_curve.dat",
     phot_output.T,
-    fmt="%.6f %.6f %.6f %.6e %.6e %.6f %.6f %.6f %.6f %.0f %s",
+    fmt="%.6f %.6f %.6f %.6e %.6e %.6f %.6f %.6f %.0f %s",
 )
 
 f, ax = plt.subplots(figsize=(12, 8))
